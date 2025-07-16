@@ -2,21 +2,98 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>PickGoblin</title>
+  <style>
+    body {
+      font-family: Helvetica, sans-serif;
+      text-align: center;
+      padding: 2em;
+      background-color: #f7f7f7;
+    }
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 0.5em;
+    }
+    p {
+      font-size: 1.2em;
+      margin-bottom: 1em;
+    }
+    input, select, button {
+      padding: 0.8em;
+      font-size: 1em;
+      margin: 0.3em;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      width: 80%;
+      max-width: 400px;
+    }
+    #chat-box {
+      margin-top: 2em;
+      text-align: left;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      background: white;
+      padding: 1em;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .message {
+      margin: 0.5em 0;
+    }
+    .user {
+      font-weight: bold;
+      color: #444;
+    }
+    .bot {
+      color: #008000;
+    }
+  </style>
 </head>
-<body style="font-family: Helvetica, sans-serif; text-align: center; padding: 2em;">
+<body>
+
   <h1>PickGoblin</h1>
   <p>
     Feeling overwhelmed by choices?<br>
     Type 3 emotions, your goal for the moment, and tell us:<br>
     Do you want <strong>1 perfect option</strong> or <strong>3 powerful ones</strong>?
   </p>
-  <p>
-    We'll guide you to the exact book, movie, or show you need—<br>
-    where to watch, where to read, <strong>no more wasted time</strong>.
-  </p>
-  <button>🎬 I'm looking for a Movie or TV Show</button>
-  <button>📚 I'm looking for a Book</button>
+
+  <input type="text" id="emotions" placeholder="e.g. bored, tired, curious" />
+  <input type="text" id="goal" placeholder="e.g. relax, get inspired, escape" />
+  <select id="quantity">
+    <option value="1">1 perfect option</option>
+    <option value="3">3 powerful ones</option>
+  </select>
+  <br/>
+  <button onclick="sendMessage()">Reveal my pick(s)</button>
+
+  <div id="chat-box"></div>
+
+  <script>
+    function sendMessage() {
+      const emotions = document.getElementById("emotions").value;
+      const goal = document.getElementById("goal").value;
+      const quantity = document.getElementById("quantity").value;
+
+      const chatBox = document.getElementById("chat-box");
+
+      // Mostrar mensaje del usuario
+      const userMsg = document.createElement("div");
+      userMsg.classList.add("message", "user");
+      userMsg.innerText = `You feel: ${emotions}. You want to: ${goal}. Picks requested: ${quantity}`;
+      chatBox.appendChild(userMsg);
+
+      // Mensaje del "bot"
+      const botMsg = document.createElement("div");
+      botMsg.classList.add("message", "bot");
+
+      botMsg.innerText = `🔮 Thinking... Try refreshing this page with AI connected to get real suggestions!`;
+
+      chatBox.appendChild(botMsg);
+    }
+  </script>
+
 </body>
 </html>
