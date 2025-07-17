@@ -71,29 +71,38 @@
 
   <div id="chat-box"></div>
 
-  <script>
-    function sendMessage() {
-      const emotions = document.getElementById("emotions").value;
-      const goal = document.getElementById("goal").value;
-      const quantity = document.getElementById("quantity").value;
+ <script>
+  async function sendMessage() {
+    const emotions = document.getElementById("emotions").value;
+    const goal = document.getElementById("goal").value;
+    const quantity = document.getElementById("quantity").value;
 
-      const chatBox = document.getElementById("chat-box");
+    const chatBox = document.getElementById("chat-box");
 
-      // Mostrar mensaje del usuario
-      const userMsg = document.createElement("div");
-      userMsg.classList.add("message", "user");
-      userMsg.innerText = `You feel: ${emotions}. You want to: ${goal}. Picks requested: ${quantity}`;
-      chatBox.appendChild(userMsg);
+    // Mostrar mensaje del usuario
+    const userMsg = document.createElement("div");
+    userMsg.classList.add("message", "user");
+    userMsg.innerText = `You feel: ${emotions}. You want to: ${goal}. Picks requested: ${quantity}`;
+    chatBox.appendChild(userMsg);
 
-      // Mensaje del "bot"
-      const botMsg = document.createElement("div");
-      botMsg.classList.add("message", "bot");
+    // Mostrar "pensando..."
+    const botMsg = document.createElement("div");
+    botMsg.classList.add("message", "bot");
+    botMsg.innerText = `🔮 Thinking...`;
+    chatBox.appendChild(botMsg);
 
-      botMsg.innerText = `🔮 Thinking... Try refreshing this page with AI connected to get real suggestions!`;
+    try {
+      const response = await fetch("/api/recommend", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ emotions, goal, quantity })
+      });
 
-      chatBox.appendChild(botMsg);
+      const data = await response.json();
+      botMsg.innerText = data.recommendations.join("\n\n");
+    } catch (err) {
+      botMsg.innerText = "❌ Error fetching recommendations. Try again later.";
     }
-  </script>
+  }
+</script>
 
-</body>
-</html>
