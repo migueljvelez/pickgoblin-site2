@@ -4,105 +4,168 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>PickGoblin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg: #f2f2f2;
+      --white: #ffffff;
+      --black: #111111;
+      --gray: #999999;
+    }
+    * {
+      box-sizing: border-box;
+    }
     body {
-      font-family: Helvetica, sans-serif;
-      text-align: center;
-      padding: 2em;
-      background-color: #f7f7f7;
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--black);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
     }
-    h1 {
-      font-size: 2.5em;
-      margin-bottom: 0.5em;
+    header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 2rem;
     }
-    p {
-      font-size: 1.2em;
+    header img {
+      width: 100px;
       margin-bottom: 1em;
     }
-    input, select, button {
-      padding: 0.8em;
-      font-size: 1em;
-      margin: 0.3em;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      width: 80%;
-      max-width: 400px;
+    header h1 {
+      font-size: 2.5rem;
+      margin: 0;
     }
-    #chat-box {
-      margin-top: 2em;
-      text-align: left;
+    header p {
+      color: var(--gray);
+      font-size: 1.1rem;
+      margin-top: 0.5em;
+      text-align: center;
+    }
+    .block-field {
+      background: transparent;
+      padding: 2rem;
       max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
-      background: white;
-      padding: 1em;
+      width: 100%;
+      margin-bottom: 2rem;
+    }
+    .block-field input, .block-field select, .block-field button {
+      padding: 0.75rem;
+      font-size: 1rem;
+      margin-bottom: 1rem;
       border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border: 1px solid #ccc;
+      width: 100%;
+      font-family: 'Inter', sans-serif;
+    }
+    input:focus {
+      outline: none;
+      border-color: #888;
+    }
+    button {
+      background: #000;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #333;
+    }
+    .chat-box {
+      max-width: 600px;
+      width: 100%;
     }
     .message {
-      margin: 0.5em 0;
+      background: var(--white);
+      border-radius: 10px;
+      padding: 1.2em;
+      margin-bottom: 1em;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
     }
-    .user {
-      font-weight: bold;
-      color: #444;
+    .user { font-weight: 600; }
+    .recommendation {
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+      margin-top: 1rem;
     }
-    .bot {
-      color: #008000;
+    .recommendation img {
+      max-width: 100%;
+      border-radius: 10px;
+      margin-bottom: 1rem;
+    }
+    .recommendation h3 {
+      margin-top: 0;
     }
   </style>
 </head>
 <body>
+  <header>
+    <img src="/logo.png" alt="PickGoblin Logo" />
+    <h1>Pick Goblin</h1>
+    <p>Your Filthy Fun Filter.</p>
+  </header>
 
-  <h1>PickGoblin</h1>
-  <p>
-    Feeling overwhelmed by choices?<br>
-    Type 3 emotions, your goal for the moment, and tell us:<br>
-    Do you want <strong>1 perfect option</strong> or <strong>3 powerful ones</strong>?
-  </p>
+  <div class="block-field">
+    <input type="text" id="emotions-movie" placeholder="Three feelings. That's all we need to sniff you." />
+    <input type="text" id="goal-movie" placeholder="What do you crave from this watch?" />
+    <input type="text" id="tastes-movie" placeholder="Your cinematic blood type. Be specific." />
+    <select id="platforms">
+      <option value="all">All Platforms</option>
+      <option value="netflix">Netflix</option>
+      <option value="hbo">HBO Max</option>
+      <option value="disney">Disney+</option>
+      <option value="prime">Amazon Prime</option>
+      <option value="hulu">Hulu</option>
+      <option value="paramount">Paramount+</option>
+    </select>
+    <button onclick="sendMessage('movie')">Unleash the Filthy Filter</button>
+  </div>
 
-  <input type="text" id="emotions" placeholder="e.g. bored, tired, curious" />
-  <input type="text" id="goal" placeholder="e.g. relax, get inspired, escape" />
-  <select id="quantity">
-    <option value="1">1 perfect option</option>
-    <option value="3">3 powerful ones</option>
-  </select>
-  <br/>
-  <button onclick="sendMessage()">Reveal my pick(s)</button>
+  <div class="chat-box" id="chat-box"></div>
 
-  <div id="chat-box"></div>
+  <script>
+    async function sendMessage(type) {
+      const emotions = document.getElementById('emotions-movie').value;
+      const goal = document.getElementById('goal-movie').value;
+      const tastes = document.getElementById('tastes-movie').value;
+      const platform = document.getElementById('platforms').value;
+      const quantity = "1";
 
- <script>
-  async function sendMessage() {
-    const emotions = document.getElementById("emotions").value;
-    const goal = document.getElementById("goal").value;
-    const quantity = document.getElementById("quantity").value;
+      const userMsg = `🎯 Mood: ${emotions}. Intent: ${goal}. Taste: ${tastes}. Platform: ${platform}`;
 
-    const chatBox = document.getElementById("chat-box");
+      const chatBox = document.getElementById("chat-box");
+      chatBox.innerHTML += `<div class='message user'>${userMsg}</div>`;
 
-    // Mostrar mensaje del usuario
-    const userMsg = document.createElement("div");
-    userMsg.classList.add("message", "user");
-    userMsg.innerText = `You feel: ${emotions}. You want to: ${goal}. Picks requested: ${quantity}`;
-    chatBox.appendChild(userMsg);
+      try {
+        const res = await fetch('/api/recommend', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ emotions, goal, tastes, quantity, type, platform })
+        });
+        const data = await res.json();
 
-    // Mostrar "pensando..."
-    const botMsg = document.createElement("div");
-    botMsg.classList.add("message", "bot");
-    botMsg.innerText = `🔮 Thinking...`;
-    chatBox.appendChild(botMsg);
+        if (data.poster && data.title && data.description && data.trailer) {
+          chatBox.innerHTML += `
+            <div class='recommendation'>
+              <img src="${data.poster}" alt="Poster of ${data.title}" />
+              <h3>${data.title}</h3>
+              <p>${data.description}</p>
+              <a href="${data.trailer}" target="_blank">🎥 Watch Trailer</a>
+            </div>`;
+        } else {
+          chatBox.innerHTML += `<div class='message bot'>${data.result}</div>`;
+        }
 
-    try {
-      const response = await fetch("/api/recommend", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ emotions, goal, quantity })
-      });
-
-      const data = await response.json();
-      botMsg.innerText = data.recommendations.join("\n\n");
-    } catch (err) {
-      botMsg.innerText = "❌ Error fetching recommendations. Try again later.";
+      } catch (e) {
+        chatBox.innerHTML += `<div class='message bot'>❌ Error fetching recommendations. Try again later.</div>`;
+      }
     }
-  }
-</script>
-
+  </script>
+</body>
+</html>
