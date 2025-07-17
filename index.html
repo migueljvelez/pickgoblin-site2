@@ -130,25 +130,52 @@
   <div class="chat-box" id="chat-box"></div>
 
   <script>
-    async function sendMessage(type) {
-      const emotions = document.getElementById('emotions-movie').value;
-      const goal = document.getElementById('goal-movie').value;
-      const tastes = document.getElementById('tastes-movie').value;
-      const platform = document.getElementById('platforms').value;
-      const quantity = "1";
+  async function sendMessage(type) {
+    const emotions = document.getElementById('emotions-movie').value;
+    const goal = document.getElementById('goal-movie').value;
+    const tastes = document.getElementById('tastes-movie').value;
+    const platform = document.getElementById('platforms').value;
+    const quantity = "1";
 
-      const userMsg = `🎯 Mood: ${emotions}. Intent: ${goal}. Taste: ${tastes}. Platform: ${platform}`;
+    const userMsg = `🎯 Mood: ${emotions}. Intent: ${goal}. Taste: ${tastes}. Platform: ${platform}`;
 
-      const chatBox = document.getElementById("chat-box");
-      chatBox.innerHTML += `<div class='message user'>${userMsg}</div>`;
+    const chatBox = document.getElementById("chat-box");
+    chatBox.innerHTML += `<div class='message user'>${userMsg}</div>`;
 
-      try {
-        const res = await fetch('/api/recommend', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ emotions, goal, tastes, quantity, type, platform })
-        });
-        const data = await res.json();
+    try {
+      const response = await fetch("/api/recommend", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          emotions: emotions,
+          goal: goal,
+          tastes: tastes,
+          type: type,
+          platform: platform,
+          quantity: quantity,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.poster && data.title && data.description && data.trailer) {
+        chatBox.innerHTML += `
+          <div class='recommendation'>
+            <img src="${data.poster}" alt="Poster of ${data.title}" />
+            <h3>${data.title}</h3>
+            <p>${data.description}</p>
+            <a href="${data.trailer}" target="_blank">🎥 Watch Trailer</a>
+          </div>`;
+      } else {
+        chatBox.innerHTML += `<div class='message bot'>🤖 ${data.result || 'No recommendation found.'}</div>`;
+      }
+
+    } catch (e) {
+      chatBox.innerHTML += `<div class='message bot'>❌ Error fetching recommendations. Try again later.</div>`;
+    }
+  }
+</script>
+
 
         if (data.poster && data.title && data.description && data.trailer) {
           chatBox.innerHTML += `
