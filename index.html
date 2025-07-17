@@ -45,21 +45,22 @@
       margin-top: 0.5em;
       text-align: center;
     }
-    .block-field {
-      background: transparent;
-      padding: 2rem;
-      max-width: 600px;
-      width: 100%;
-      margin-bottom: 2rem;
-    }
-    .block-field input, .block-field select, .block-field button {
-      padding: 0.75rem;
-      font-size: 1rem;
-      margin-bottom: 1rem;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      width: 100%;
-      font-family: 'Inter', sans-serif;
+    .block-field select {
+  appearance: none;
+  background-color: white;
+  background-image: url('data:image/svg+xml;utf8,<svg fill="%23999999" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: calc(100% - 2rem) center;
+  background-size: 1rem;
+  padding-right: 3rem;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  width: 100%;
+  font-family: 'Inter', sans-serif;
+}
+
     }
     input:focus {
       outline: none;
